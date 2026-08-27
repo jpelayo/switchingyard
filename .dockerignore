@@ -1,0 +1,41 @@
+# Context root is this directory, which is also the repository root — so .git is
+# in the context and Docker does not exclude it for you. It holds the vendored
+# checkout's entire history under .git/modules/Switchyard (tens of MB), and none
+# of it is copied into the image.
+.git
+.gitmodules
+.gitattributes
+
+# Agent tooling and project docs. Read by people and models working on this
+# repository; nothing in the image ever opens them.
+.claude
+CLAUDE.md
+UPSTREAM.md
+
+# Upstream's own Switchyard/.dockerignore applies only when Switchyard/ is itself
+# the context, so its exclusions are repeated here. Switchyard/.git is a gitlink
+# file rather than a directory now that the checkout is a submodule; it is
+# excluded either way.
+Switchyard/.git
+Switchyard/target
+Switchyard/.worktrees
+Switchyard/.venv
+Switchyard/benchmark/datasets
+Switchyard/benchmark/tb_runs
+Switchyard/dist
+Switchyard/site
+Switchyard/.mypy_cache
+Switchyard/.pytest_cache
+Switchyard/.ruff_cache
+
+# manage.py, ingest.py, authcheck.py and entrypoint.sh sit at the context root
+# and are copied into the image. routes.toml is generated at runtime, never
+# baked. Exclude only what must never enter one.
+#
+# The `**/` matters: a pattern with no wildcard is anchored at the context root,
+# so a bare `__pycache__` misses tui/__pycache__ and tui/providers/__pycache__ —
+# which are inside `COPY tui`, and were being baked into the image.
+data
+**/.env
+**/__pycache__
+**/.DS_Store

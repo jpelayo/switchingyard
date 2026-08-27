@@ -1,0 +1,3 @@
+[submodule "Switchyard"]
+	path = Switchyard
+	url = https://github.com/NVIDIA-NeMo/Switchyard.git

@@ -216,3 +216,25 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- Switchyard ---------------------------------------------------------
+# This file used to sit above the deployment, which carried its own ignores.
+# It is now the repository root and covers both.
+
+# Local agent settings only. The profile-add skill under .claude/skills/ is
+# checked in on purpose: adding a mode touches seven places and two of them
+# fail silently, so the procedure has to travel with the repository.
+.claude/
+CLAUDE.md
+UPSTREAM.md
+# Any state produced by running the TUI against a host directory rather than
+# the container volume. Real state lives in the switchyard-config volume, and
+# routes.toml and the Caddyfile are generated into it — never committed.
+data/
+*.db
+*.db-wal
+*.db-shm
+routes.toml
+Caddyfile
+
+.DS_Store
