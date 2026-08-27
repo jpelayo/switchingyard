@@ -17,11 +17,11 @@ from profiles import MODES, Profiles
 # Per-mode descriptions kept as data, because modes that share a model must be
 # merged into one judge label — see `groups()`.
 MODE_DESC = {
-    "simple": "a short factual answer, chat, rewriting, translation or formatting; also any turn whose only work is reporting, summarising or acknowledging a tool result that is already in the conversation",
-    "toolcall": "this turn needs a tool or function — reading or writing files, running commands, querying an API, retrieving data; recent tool calls awaiting a follow-up action are evidence for this mode, but a tool result already returned and only needing description is not",
+    "simple": "a short factual answer, chat, rewriting, translation or formatting; also any turn whose only work is relaying or acknowledging one small tool result already in the conversation — several results that must be digested together are more than this mode",
+    "toolcall": "this turn's own work is invoking a tool or function — reading or writing files, running commands, querying an API, fetching or searching the web; recent tool calls awaiting a follow-up action are evidence for this mode, and the surrounding conversation being a plan or an investigation does not change it — the act decides, not the topic; a tool result already returned and only needing description is not this mode",
     "coder": "this turn will itself write, edit, review or debug code",
-    "planner": "breaking work into steps, sequencing it, comparing approaches, or producing a design or specification",
-    "researcher": "synthesising across many sources, long documents, or a long transcript",
+    "planner": "this turn produces the plan itself — breaking work into steps, sequencing it, comparing approaches, or writing a design or specification; a turn that merely carries out one step of a plan already in the conversation is whatever that step's work is, not this mode",
+    "researcher": "synthesising across many sources, long documents, or a long transcript — pages, search results and files that tools returned earlier in the conversation count as sources; the work is digesting and combining that material into an answer",
     "reasoner": "mathematics, proofs, logic, or careful multi-step derivation where a wrong intermediate step invalidates the answer",
     "image-in": "the turn cannot be answered without looking at an image already in the conversation — a screenshot, diagram, photograph or scan",
     "image-out": "the turn must produce or edit an image; the deliverable is a picture, not a description of one",
@@ -34,9 +34,9 @@ MODE_DESC = {
 PREAMBLE = "Classify the request into exactly one task mode, and answer with that mode's exact label.\n"
 
 POSTAMBLE = """
-Classify the work THIS turn produces, not the subject matter of the text in context. A conversation about a codebase is not `coder` unless this turn actually writes or analyses code. Material in context describes what has already happened; it does not by itself make the next turn hard.
+Classify the work THIS turn produces, not the subject matter of the text in context. A conversation about a codebase is not `coder` unless this turn actually writes or analyses code, and a conversation building a plan is not `planner` on the turns that carry the plan's steps out. In a long exchange the topic stays constant while the work changes turn by turn — judge the turn, not the conversation.
 
-Prefer the cheapest mode that can do the work. Reach for a more capable mode only when the turn plainly requires it.
+Prefer the cheapest mode that can do the work. Reach for a more capable mode only when the turn plainly requires it — but do not let cheapness reclassify the work: digesting several fetched sources is research however routine each fetch was.
 
 Return JSON matching the response schema supplied with the request.
 """
